@@ -4,13 +4,15 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -42,4 +44,30 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    function getToken(): string
+    {
+        return $this->createToken(env('APP_NAME'))->plainTextToken;
+    }
+
+    function removeToken(): ?bool
+    {
+        return $this->tokens()->delete();
+    }
+
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class);
+    }
+
+
+    /**
+     *  Returns true if the worker has a specific role
+     * @param $role int|string
+     * @return bool
+     */
+    public function hasRole(int|string $role): bool
+    {
+        return $this->roles()->where(is_numeric($role) ? 'roles.id' : 'roles.name', $role)->exists();
+    }
 }
