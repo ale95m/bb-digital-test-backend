@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -178,5 +179,23 @@ abstract class BaseRepository
             }
             return $query->findOrFail($id);
         }
+    }
+
+    /**
+     * Mapea una colleccion y la prepara para hacer sync con una relacion mucho a mucho. Generalmente solo es necesario en caso de relaciones con pivot
+     *
+     * @param Collection|array $collection
+     * @param string $map_key
+     * @param array $to_map
+     * @return Collection
+     */
+    public function mapCollectionSync(Collection|array $collection, string $map_key = 'id', array $to_map = []): Collection
+    {
+        if (!is_subclass_of(Collection::class,$collection)){
+            $collection = collect($collection);
+        }
+        return $collection->mapWithKeys(function ($item) use ($to_map, $map_key) {
+            return [$item[$map_key] => collect($item)->except($map_key)->only($to_map)];
+        });
     }
 }

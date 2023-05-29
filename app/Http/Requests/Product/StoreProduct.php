@@ -29,9 +29,9 @@ class StoreProduct extends FormRequest
             'price' => 'numeric|required',
             'category_id' => 'integer|required|exists:categories,id',
             'images' => 'array',
-            'images.url' => 'active_url|required_with:images',
+            'images.*' => 'url|required_with:images',
             'tags' => 'array',
-            'tags.id' => 'integer|required_with:tags|exists:tags,id'
+            'tags.*' => 'integer|required_with:tags|exists:tags,id'
         ];
     }
 }

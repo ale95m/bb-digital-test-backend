@@ -33,10 +33,30 @@ class ProductRepository extends BaseRepository
         return new Product();
     }
 
+    public function create(array $data): Model
+    {
+        $product = parent::create($data);
+        /** @var Product $product */
+        if (isset($data['tags'])) {
+            $product->tags()->sync($data['tags']);
+        }
+        if (isset($data['images'])) {
+            foreach ($data['images'] as $image) {
+                $product->images()->create(['url' => $image]);
+            }
+        }
+        return $product;
+    }
+
     public function update(Model $model, array $data): Model
     {
         unset($data['sku']);
-        return parent::update($model, $data);
+        $model = parent::update($model, $data);
+        /** @var Product $model */
+        if (isset($data['tags'])) {
+            $model->tags()->sync($data['tags']);
+        }
+        return $model;
     }
 
 }
