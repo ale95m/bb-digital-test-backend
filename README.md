@@ -1,66 +1,65 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+## BB-Digital-Test-Backend
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+El proyecto consiste en una aplicación desarrollada en Laravel 10 para un ejemplo ficticio basado en un api para un
+e-commerce.
 
-## About Laravel
+A continuación le guiamos para la puesta en marcha del mismo en un entorno local.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Requisitos previos
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- [PHP 8.1](https://www.php.net/downloads.php)
+- [Composer](http://getcomposer.org)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Instalación y configuración
 
-## Learning Laravel
+Al tener clonado el proyecto abra una terminal en la carpeta del repositorio y escriba el comando:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+    composer install
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Al terminar de instalar los paquetes necesarios copie el archivo “.env.example” y péguelo con el nombre “.env”. Genere
+la llave de su aplicación Laravel ejecutando el comando:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+    php artisan key:generate
 
-## Laravel Sponsors
+Ahora es tiempo de configurar su acceso a datos. Abra el archivo “.env” y en el debe configurar los parámetros
+necesarios para la conexión a su base de datos, esta puede estar alojada en un servidor MySQL, PostgreSQL, SQLServer o
+incluso en un archivo SQLite. Hecho esto es hora de correr las migraciones para que se creen las tablas de su base de
+datos y ejecutar los seeders para poblarla con algunos datos que le servirón para realizar pruebas. Para esto ejecute el
+comando:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+    php artisan migrate --seed
 
-### Premium Partners
+Ya está listo para poner en marcha su aplicación Laravel. Puede hacerlo usando un servidor web o simplemente ejecutando
+el comando:
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+    php artisan serve
 
-## Contributing
+Este inicia un servidor web en la dirección http://127.0.0.1:8000
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Ya está lista para usarlo.
 
-## Code of Conduct
+Si lo desea puede comprobar el correcto su correcto funcionamiento ejecutandolos test con el comando:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+    php artisan test
 
-## Security Vulnerabilities
+### Endpoints
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Si usa [Postman](https://www.postman.com/downloads/) puede importar el archivo *BB Test.postman_collection.json* que se encuentra en la raiz del repositorio y contiene una colección con las rutas para que pueda probarlas con comodidad.
 
-## License
+| Método|Ruta|Descripcion   |  
+|---|---|---|
+|POST|   api/login |  Permite iniciar sesión y obtener un token valido por 30 minutos
+|GET|    api/logout | Permite cerrar las sesiones del usuario
+|GET|    api/products  |  Obtiene los productos paginados y permite realizar filtros por los campos del producto
+|POST|   api/products  |  Crea un producto en la base de datos
+|GET| api/products/get/count | Obtiene el total de productos que coincidan con los parámetros de filtro especificados
+|GET| api/products/get/out_of_stock  | Obtiene todos los productos que no tienen existencias
+|POST|    api/products/sell/{product}| Vende un producto
+|GET| api/products/{product} | Obtiene los detalles de un producto por su SKU
+|PUT| api/products/{product} | Actualiza la información de un producto
+|DELETE|  api/products/{product} | Elimina un producto
+|GET| api/sales  | Obtiene la lista de artículos vendidos
+|GET| api/sales/total | Obtiene el total ingresado por ventas
+|GET| api/user |   Obtiene el usuario autenticado
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
